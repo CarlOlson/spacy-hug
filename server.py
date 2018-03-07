@@ -20,7 +20,7 @@ def parse(text:hug.types.text='', response=None):
 
     nodes = []
     for word in nlp(text).doc:
-        lemma = word.text.lower()
+        lemma = nlp.vocab[word.lemma].text
         pos = word.tag_.lower()
         nodes.append('word({lemma}, {pos}, root, [])'.format(**locals()))
-    return nodes[1]
+    return ''.join(nodes)

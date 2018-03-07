@@ -21,4 +21,7 @@ def test_parse_with_empty_param():
 def test_parse_with_valid_string():
     response = hug.test.get(server, '/parse', {'text': 'Hello World.'})
     assert response.status == HTTP_200
-    assert response.data == 'word(world, nn, root, [])'
+    # assert response.data == 'word(hello, uh, t, [])'
+
+def test_parse_uses_lemmas():
+    assert 'create' in server.parse('Creating world.')
