@@ -19,5 +19,6 @@ def test_parse_with_empty_param():
     assert response.data == 'empty.'
 
 def test_parse_with_valid_string():
-    response = hug.test.get(server, '/parse', {'text': 'Hello world.'})
+    response = hug.test.get(server, '/parse', {'text': 'Hello World.'})
     assert response.status == HTTP_200
+    assert response.data == 'word(world, nn, root, [])'
