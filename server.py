@@ -11,5 +11,6 @@ def not_found():
 @hug.get('/parse')
 def parse(text:hug.types.text='', response=None):
     """Parse a string into a prolog-readable dependency graph."""
-    response.status = falcon.HTTP_400
-    return 'empty.'
+    if text == '':
+        response.status = falcon.HTTP_400
+        return 'empty.'
