@@ -26,10 +26,14 @@ def is_child_of(word, root):
     return word.head.i == root.i and word.i != root.i
 
 def build_term(root, doc):
+    if root.is_punct:
+        return ''
+
     children = [word for word in doc if is_child_of(word, root)]
     children = map(lambda word: build_term(word, doc), children)
     children = ', '.join(children)
 
     lemma = nlp.vocab[root.lemma].text
     pos = root.tag_.lower()
-    return 'word({lemma}, {pos}, root, [{children}])'.format(**locals())
+    dep = root.dep_.lower()
+    return 'word({lemma}, {pos}, {dep}, [{children}])'.format(**locals())

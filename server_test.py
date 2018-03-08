@@ -25,6 +25,13 @@ def test_parse_with_valid_string():
 def test_parse_uses_lemmas():
     assert 'create' in server.parse('Creating world.')
 
+def test_parse_uses_pos():
+    assert 'vb' in server.parse('Creating world.')
+    assert 'nn' in server.parse('Creating world.')
+
+def test_parse_sets_dependency_type():
+    assert 'dobj' in server.parse('Creating world.')
+
 def test_parse_starts_at_root():
     response = server.parse('To be or not to be.')
     assert response.startswith('word(be, vb, root, [')
@@ -32,3 +39,7 @@ def test_parse_starts_at_root():
 def test_parse_has_children():
     response = server.parse('To be or not to be.')
     assert 'word(be, vb, root, [word(' in response
+
+def test_parse_returns_no_puctuation():
+    response = server.parse('To be or not to be.')
+    assert 'word(.' not in response
