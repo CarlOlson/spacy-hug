@@ -22,13 +22,14 @@ def parse(text:hug.types.text='', response=None):
     root = next(word for word in doc if word.dep_ == 'ROOT')
     return build_term(root, doc)
 
+def is_child_of(word, root):
+    return word.head.i == root.i and word.i != root.i
+
 def build_term(root, doc):
-    children = []
-    for word in doc:
-        if word.head.i == root.i and word.i != root.i:
-            children.append(build_term(word, doc))
+    children = [word for word in doc if is_child_of(word, root)]
+    children = map(lambda word: build_term(word, doc), children)
+    children = ', '.join(children)
 
     lemma = nlp.vocab[root.lemma].text
     pos = root.tag_.lower()
-    children = ', '.join(children)
     return 'word({lemma}, {pos}, root, [{children}])'.format(**locals())
