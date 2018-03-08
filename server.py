@@ -20,16 +20,17 @@ def parse(text:hug.types.text='', response=None):
 
     doc = nlp(text).doc
     root = next(word for word in doc if word.dep_ == 'ROOT')
-    return build_term(root, doc)
+    return build_term(root, doc) + '.'
 
 def is_child_of(word, root):
     return word.head.i == root.i and word.i != root.i
 
 def build_term(root, doc):
-    if root.is_punct:
-        return ''
-
-    children = [word for word in doc if is_child_of(word, root)]
+    children = [
+        word for word in doc
+        if is_child_of(word, root)
+        and not word.is_punct
+    ]
     children = map(lambda word: build_term(word, doc), children)
     children = ', '.join(children)
 

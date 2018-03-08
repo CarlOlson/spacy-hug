@@ -21,6 +21,7 @@ def test_parse_with_empty_param():
 def test_parse_with_valid_string():
     response = hug.test.get(server, '/parse', {'text': 'Hello World.'})
     assert response.status == HTTP_200
+    assert response.data == 'word(world, nn, root, [word(hello, uh, intj, [])]).'
 
 def test_parse_uses_lemmas():
     assert 'create' in server.parse('Creating world.')
@@ -43,3 +44,7 @@ def test_parse_has_children():
 def test_parse_returns_no_puctuation():
     response = server.parse('To be or not to be.')
     assert 'word(.' not in response
+
+def test_parse_ends_with_period():
+    response = server.parse('To be or not to be.')
+    assert response[-1] == '.'
