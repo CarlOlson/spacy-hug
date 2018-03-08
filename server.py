@@ -18,9 +18,17 @@ def parse(text:hug.types.text='', response=None):
         response.status = falcon.HTTP_400
         return 'empty.'
 
-    nodes = []
-    for word in nlp(text).doc:
-        lemma = nlp.vocab[word.lemma].text
-        pos = word.tag_.lower()
-        nodes.append('word({lemma}, {pos}, root, [])'.format(**locals()))
-    return ''.join(nodes)
+    doc = nlp(text).doc
+    root = next(word for word in doc if word.dep_ == 'ROOT')
+    return build_term(root, doc)
+
+def build_term(root, doc):
+    children = []
+    for word in doc:
+        if word.head.i == root.i and word.i != root.i:
+            children.append(build_term(word, doc))
+
+    lemma = nlp.vocab[root.lemma].text
+    pos = root.tag_.lower()
+    children = ', '.join(children)
+    return 'word({lemma}, {pos}, root, [{children}])'.format(**locals())
